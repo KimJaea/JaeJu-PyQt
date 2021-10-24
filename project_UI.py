@@ -62,7 +62,7 @@ class MyApp(QWidget):
         self.fileSelect = QPushButton("Select File", self)
         self.fileSelect.clicked.connect(self.fileSelectClicked)
         self.fileSelect.setGeometry(50, 300, 200, 20)
-        self.fileLabel = QLabel('D:/ThinkGearData/result.txt', self)
+        self.fileLabel = QLabel('C:/Users/rkddn/PyQtGUI/test.txt', self)
         self.fileLabel.setGeometry(300, 300, 200, 20)
         self.fileLabel.setAlignment(Qt.AlignCenter)
         btnPreEEG = QPushButton('Preprocess EEG', self)
@@ -79,6 +79,17 @@ class MyApp(QWidget):
         btnWebPage = QPushButton('Web Page', self)
         btnWebPage.clicked.connect(self.clicked3)
         btnWebPage.setGeometry(650, 400, 100, 30)
+
+        # Additional Function - Multiple File
+        self.multipleFile = QPushButton("Multiple", self)
+        self.multipleFile.clicked.connect(self.multipleFileClicked)
+        self.multipleFile.setGeometry(50, 450, 200, 20)
+        # Additional Function - Show Loading Bar
+        self.showBar = QPushButton("Show Bar", self)
+        self.showBar.clicked.connect(self.showBarClicked)
+        self.showBar.setGeometry(300, 450, 200, 20)
+        
+
 
     def dirSelectClicked(self):
         dname = QFileDialog.getExistingDirectory(self)
@@ -165,6 +176,28 @@ class MyApp(QWidget):
     def clicked3(self):
         QMessageBox.about(self, "message", "opening web page")
         webbrowser.open('http://webpage.com:8080')
+
+    ## Actual Additional Function
+    def multipleFileClicked(self):
+        file = self.fileLabel.text()
+        f = open(file, "r")
+        con = f.readline()
+        f.close()
+
+        con2 = con
+        con2 = con2.split() # list
+        num = int(210000 / len(con2)) + 1
+
+        if os.path.exists("data_total.txt"):
+            os.remove("data_total.txt")
+        with open("data_total.txt", "wb") as outfile:
+            for i in range(num):
+                outfile.write(con.encode())
+            
+    def showBarClicked(self):
+        min = str(self.spinbox.value() * 6)
+        print(min + " seconds")
+        os.startfile('.\loading.py ' + min)        
 
     def value_changed(self):
         self.minute.setText(str(self.spinbox.value()))
